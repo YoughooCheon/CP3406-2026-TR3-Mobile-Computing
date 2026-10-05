@@ -41,4 +41,20 @@
     <string name="error_data_message">The race data could not be read.</string>
     <string name="error_no_race_title">No upcoming race</string>
     <string name="error_no_race_message">There are no more races scheduled this season. Check again later.</string>
+
+    <!-- Settings -->
+    <string name="settings_section_time">Time display</string>
+    <string name="settings_time_device">Device time</string>
+    <string name="settings_time_utc">UTC</string>
+    <string name="settings_use_24h">24-hour clock</string>
+    <string name="settings_section_countdown">Countdown target</string>
+    <string name="settings_target_next">Next session</string>
+    <string name="settings_target_race">Race</string>
+    <string name="settings_section_sessions">Sessions to show</string>
+    <string name="settings_show_practice">Practice</string>
+    <string name="settings_show_qualifying">Qualifying (incl. sprint qualifying)</string>
+    <string name="settings_show_sprint">Sprint</string>
+    <string name="settings_race_always">The race is always shown.</string>
+    <string name="settings_note">Changes apply to the Home screen straight away. They are not saved when the app closes.</string>
+    <string name="settings_reset">Reset to defaults</string>
 </resources>
