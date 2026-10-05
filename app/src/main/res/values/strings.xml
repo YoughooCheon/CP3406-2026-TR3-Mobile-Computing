@@ -1,4 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">F1 Race Countdown</string>
+
+    <!-- Navigation -->
+    <string name="action_retry">Try again</string>
+    <string name="action_check_again">Check again</string>
+
+    <!-- Race header -->
+    <string name="race_round_season">Round %1$d · %2$s season</string>
+
+    <!-- Countdown -->
+    <string name="countdown_title">Countdown to %1$s</string>
+    <string name="countdown_unit_days">Days</string>
+    <string name="countdown_unit_hours">Hrs</string>
+    <string name="countdown_unit_minutes">Min</string>
+    <string name="countdown_unit_seconds">Sec</string>
+    <string name="countdown_content_description">%1$d days, %2$d hours, %3$d minutes and %4$d seconds remaining</string>
+    <string name="countdown_over_title">Nothing left to count down to</string>
+    <string name="countdown_over_message">This race weekend is under way or finished. Use refresh to check for the next race.</string>
+
+    <!-- Schedule -->
+    <string name="schedule_title">Weekend schedule</string>
+    <string name="schedule_times_in">Times shown in %1$s</string>
+    <string name="schedule_badge_next">NEXT</string>
+    <string name="session_first_practice">Practice 1</string>
+    <string name="session_second_practice">Practice 2</string>
+    <string name="session_third_practice">Practice 3</string>
+    <string name="session_sprint_qualifying">Sprint Qualifying</string>
+    <string name="session_sprint">Sprint</string>
+    <string name="session_qualifying">Qualifying</string>
+    <string name="session_race">Race</string>
+
+    <!-- Loading and errors -->
+    <string name="loading_message">Loading next race…</string>
+    <string name="error_network_title">No connection</string>
+    <string name="error_network_message">Check your internet connection and try again.</string>
+    <string name="error_server_title">Server problem</string>
+    <string name="error_server_message">The race data service is not responding. Please try again shortly.</string>
+    <string name="error_data_title">Unexpected data</string>
+    <string name="error_data_message">The race data could not be read.</string>
+    <string name="error_no_race_title">No upcoming race</string>
+    <string name="error_no_race_message">There are no more races scheduled this season. Check again later.</string>
 </resources>
