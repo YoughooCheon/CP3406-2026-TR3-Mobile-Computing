@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 12+ shows its own system splash first: keep it plain black and icon-less
+         so it hands over smoothly to the Compose splash screen. -->
+    <style name="Theme.CP3406_Assessment_Younghoocheon" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/f1_black</item>
+        <item name="android:windowSplashScreenBackground">@color/f1_black</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_empty_icon</item>
+    </style>
+</resources>

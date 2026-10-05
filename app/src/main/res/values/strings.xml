@@ -3,6 +3,12 @@
     <string name="app_name">F1 Race Countdown</string>
 
     <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_settings">Settings</string>
+    <string name="title_race">Next Race</string>
+    <string name="title_settings">Settings</string>
+    <string name="splash_logo_description">Formula 1 logo</string>
+    <string name="action_refresh">Refresh</string>
     <string name="action_retry">Try again</string>
     <string name="action_check_again">Check again</string>
 
