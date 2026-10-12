@@ -1,9 +1,14 @@
 package com.example.cp3406_assessment_younghoocheon.ui.theme
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
+
+/** Thin dark-red outline that separates the near-black cards from the black background. */
+val F1CardBorder = BorderStroke(width = 1.dp, color = F1OutlineVariant)
 
 private val LightColors = lightColorScheme(
     primary = F1Red,

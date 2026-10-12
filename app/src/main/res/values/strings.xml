@@ -48,6 +48,15 @@
     <string name="error_no_race_title">No upcoming race</string>
     <string name="error_no_race_message">There are no more races scheduled this season. Check again later.</string>
 
+    <!-- News -->
+    <string name="news_title">Latest F1 news</string>
+    <string name="news_top_story">TOP STORY</string>
+    <string name="news_read_more">Read on formula1.com</string>
+    <string name="news_more">More on formula1.com</string>
+    <string name="news_loading">Loading news…</string>
+    <string name="news_error">The latest news could not be loaded.</string>
+    <string name="news_empty">No news available right now.</string>
+
     <!-- Settings -->
     <string name="settings_section_time">Time display</string>
     <string name="settings_time_device">Device time</string>

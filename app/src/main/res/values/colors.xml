@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="f1_black">#FF0B0B0F</color>
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="f1_black">#FF050506</color>
+>>>>>>> 515e9e4 (Add news section and update UI)
 </resources>

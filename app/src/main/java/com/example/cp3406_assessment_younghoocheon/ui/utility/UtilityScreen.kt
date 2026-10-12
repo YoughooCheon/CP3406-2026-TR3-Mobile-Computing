@@ -21,12 +21,13 @@ import com.example.cp3406_assessment_younghoocheon.ui.theme.AppTheme
 import com.example.cp3406_assessment_younghoocheon.ui.utility.components.CountdownCard
 import com.example.cp3406_assessment_younghoocheon.ui.utility.components.ErrorContent
 import com.example.cp3406_assessment_younghoocheon.ui.utility.components.LoadingContent
+import com.example.cp3406_assessment_younghoocheon.ui.utility.components.NewsSection
 import com.example.cp3406_assessment_younghoocheon.ui.utility.components.RaceHeader
 import com.example.cp3406_assessment_younghoocheon.ui.utility.components.SessionScheduleCard
 import java.time.Instant
 
 /**
- * Main "at a glance" screen: next race, live countdown and the weekend timetable.
+ * Main "at a glance" screen: next race, live countdown, latest F1 news and the weekend timetable.
  *
  * All state is hoisted: this composable only renders what it is given.
  */
@@ -35,7 +36,9 @@ fun UtilityScreen(
     uiState: UtilityUiState,
     settings: UtilitySettings,
     now: State<Instant>,
+    newsState: NewsUiState,
     onRetry: () -> Unit,
+    onRetryNews: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (uiState) {
@@ -49,17 +52,21 @@ fun UtilityScreen(
             race = uiState.race,
             settings = settings,
             now = now,
+            newsState = newsState,
+            onRetryNews = onRetryNews,
             modifier = modifier
         )
     }
 }
 
-/** Scrollable success state: header, live countdown and weekend timetable. */
+/** Scrollable success state: header, live countdown, latest news and weekend timetable. */
 @Composable
 private fun RaceContent(
     race: Race,
     settings: UtilitySettings,
     now: State<Instant>,
+    newsState: NewsUiState,
+    onRetryNews: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -71,6 +78,7 @@ private fun RaceContent(
     ) {
         RaceHeader(race = race)
         CountdownSection(race = race, settings = settings, now = now)
+        NewsSection(state = newsState, onRetry = onRetryNews)
         SessionScheduleCard(race = race, settings = settings, now = now)
     }
 }
@@ -93,7 +101,9 @@ private fun UtilityScreenPreview() {
             uiState = UtilityUiState.Success(PreviewData.race),
             settings = UtilitySettings(),
             now = remember { mutableStateOf(PreviewData.now) },
-            onRetry = {}
+            newsState = NewsUiState.Success(PreviewData.news),
+            onRetry = {},
+            onRetryNews = {}
         )
     }
 }

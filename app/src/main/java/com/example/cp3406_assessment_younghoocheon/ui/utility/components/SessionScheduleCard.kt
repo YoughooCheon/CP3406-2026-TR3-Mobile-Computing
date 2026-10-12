@@ -23,6 +23,7 @@ import com.example.cp3406_assessment_younghoocheon.domain.computeCountdown
 import com.example.cp3406_assessment_younghoocheon.domain.visibleSessions
 import com.example.cp3406_assessment_younghoocheon.ui.preview.PreviewData
 import com.example.cp3406_assessment_younghoocheon.ui.theme.AppTheme
+import com.example.cp3406_assessment_younghoocheon.ui.theme.F1CardBorder
 import com.example.cp3406_assessment_younghoocheon.util.zoneFor
 import java.time.Instant
 
@@ -43,7 +44,7 @@ fun SessionScheduleCard(
     val currentTime = now.value
     val target = (computeCountdown(race, settings, currentTime) as? CountdownState.Upcoming)?.session
 
-    Card(modifier = modifier.fillMaxWidth()) {
+    Card(modifier = modifier.fillMaxWidth(), border = F1CardBorder) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
             Text(
                 text = stringResource(R.string.schedule_title),

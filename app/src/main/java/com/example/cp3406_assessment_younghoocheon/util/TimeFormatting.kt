@@ -10,6 +10,8 @@ private const val DAY_PATTERN = "EEE d MMM"
 private const val TIME_PATTERN_24H = "HH:mm"
 private const val TIME_PATTERN_12H = "h:mm a"
 
+// Always English, whatever the phone language is (e.g. "Fri 2 Oct", not Korean month names).
+
 /** Time zone that matches the user's [TimeZoneMode] choice. */
 fun zoneFor(mode: TimeZoneMode): ZoneId = when (mode) {
     TimeZoneMode.DEVICE -> ZoneId.systemDefault()
@@ -20,7 +22,7 @@ fun zoneFor(mode: TimeZoneMode): ZoneId = when (mode) {
 fun formatSessionDay(
     instant: Instant,
     zone: ZoneId,
-    locale: Locale = Locale.getDefault()
+    locale: Locale = Locale.ENGLISH
 ): String = DateTimeFormatter.ofPattern(DAY_PATTERN, locale).withZone(zone).format(instant)
 
 /** e.g. "17:30" or "5:30 PM". */
@@ -28,7 +30,7 @@ fun formatSessionTime(
     instant: Instant,
     zone: ZoneId,
     use24Hour: Boolean,
-    locale: Locale = Locale.getDefault()
+    locale: Locale = Locale.ENGLISH
 ): String {
     val pattern = if (use24Hour) TIME_PATTERN_24H else TIME_PATTERN_12H
     return DateTimeFormatter.ofPattern(pattern, locale).withZone(zone).format(instant)

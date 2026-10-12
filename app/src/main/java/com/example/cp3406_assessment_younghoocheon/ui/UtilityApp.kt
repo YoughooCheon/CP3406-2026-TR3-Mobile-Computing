@@ -52,6 +52,7 @@ fun UtilityApp(
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     // Kept as a State (not unwrapped) so only the composables that read it recompose each second.
     val now = viewModel.now.collectAsStateWithLifecycle()
+    val newsState by viewModel.newsState.collectAsStateWithLifecycle()
     var currentDestination by rememberSaveable { mutableStateOf(AppDestination.HOME) }
 
     Scaffold(
@@ -76,7 +77,9 @@ fun UtilityApp(
                 uiState = uiState,
                 settings = settings,
                 now = now,
+                newsState = newsState,
                 onRetry = viewModel::refresh,
+                onRetryNews = viewModel::refreshNews,
                 modifier = contentModifier
             )
 

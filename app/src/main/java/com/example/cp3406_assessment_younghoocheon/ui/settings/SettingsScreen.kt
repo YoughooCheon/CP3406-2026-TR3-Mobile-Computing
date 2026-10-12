@@ -34,6 +34,7 @@ import com.example.cp3406_assessment_younghoocheon.domain.CountdownTargetMode
 import com.example.cp3406_assessment_younghoocheon.domain.TimeZoneMode
 import com.example.cp3406_assessment_younghoocheon.domain.UtilitySettings
 import com.example.cp3406_assessment_younghoocheon.ui.theme.AppTheme
+import com.example.cp3406_assessment_younghoocheon.ui.theme.F1CardBorder
 
 /**
  * Settings screen. Every control changes what the main screen shows.
@@ -133,7 +134,7 @@ private fun SettingsSection(
     @StringRes titleRes: Int,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+    Card(modifier = Modifier.fillMaxWidth(), border = F1CardBorder) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)

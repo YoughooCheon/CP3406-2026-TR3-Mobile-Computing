@@ -13,12 +13,16 @@ val F1RedBright = Color(0xFFFF4D42) // red for small text/icons on dark surfaces
 val F1RedContainerDark = Color(0xFF93000A)
 val F1OnRedContainerDark = Color(0xFFFFFFFF)
 
-val F1Black = Color(0xFF0B0B0F)
-val F1SurfaceLow = Color(0xFF121217)
-val F1Surface = Color(0xFF17171D)
-val F1SurfaceHigh = Color(0xFF1D1D25)
-val F1SurfaceHighest = Color(0xFF23232C)
-val F1OnSurface = Color(0xFFF2F2F5)
-val F1OnSurfaceVariant = Color(0xFFA9A9B5)
-val F1Outline = Color(0xFF3A3A46)
-val F1OutlineVariant = Color(0xFF2A2A33)
+val F1Black = Color(0xFF050506)            // app background: almost pure black
+val F1SurfaceLow = Color(0xFF09090B)
+val F1Surface = Color(0xFF0C0C0F)           // bottom navigation bar
+val F1SurfaceHigh = Color(0xFF101014)
+val F1SurfaceHighest = Color(0xFF131317)    // cards: a touch lighter than the background, not grey
+val F1OnSurface = Color(0xFFFFFFFF)         // white text
+val F1OnSurfaceVariant = Color(0xFFC2C2CB)  // softer white for secondary text
+val F1Outline = Color(0xFF4A1F23)           // dark red-tinted lines
+val F1OutlineVariant = Color(0xFF2A1518)    // card borders and dividers
+
+// Countdown card gradient: F1 red fading into black
+val F1CountdownStart = Color(0xFFB00008)
+val F1CountdownEnd = Color(0xFF12060A)

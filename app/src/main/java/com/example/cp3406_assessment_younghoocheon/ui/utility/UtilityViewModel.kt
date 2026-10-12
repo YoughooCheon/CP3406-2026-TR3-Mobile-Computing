@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.cp3406_assessment_younghoocheon.UtilityApplication
+import com.example.cp3406_assessment_younghoocheon.data.repository.NewsRepository
 import com.example.cp3406_assessment_younghoocheon.data.repository.RaceError
 import com.example.cp3406_assessment_younghoocheon.data.repository.RaceLoadException
 import com.example.cp3406_assessment_younghoocheon.data.repository.RaceRepository
@@ -30,7 +31,8 @@ private const val STOP_TIMEOUT_MS = 5_000L
  * Both screens use the same instance, so a settings change immediately updates the main screen.
  */
 class UtilityViewModel(
-    private val repository: RaceRepository
+    private val repository: RaceRepository,
+    private val newsRepository: NewsRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UtilityUiState>(UtilityUiState.Loading)
@@ -58,14 +60,21 @@ class UtilityViewModel(
         initialValue = Instant.now()
     )
 
+    private val _newsState = MutableStateFlow<NewsUiState>(NewsUiState.Loading)
+
+    /** Loading / success / error state of the news feed (independent of the race request). */
+    val newsState: StateFlow<NewsUiState> = _newsState.asStateFlow()
+
     private var loadJob: Job? = null
+    private var newsJob: Job? = null
 
     init {
         refresh()
     }
 
-    /** (Re)loads the next race. A request that is still running is cancelled first. */
+    /** (Re)loads the next race and the news. A request that is still running is cancelled first. */
     fun refresh() {
+        refreshNews()
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
             _uiState.value = UtilityUiState.Loading
@@ -75,6 +84,18 @@ class UtilityViewModel(
                     val error = (throwable as? RaceLoadException)?.error ?: RaceError.DATA
                     UtilityUiState.Error(error)
                 }
+            )
+        }
+    }
+
+    /** (Re)loads the news only. A failure here never affects the race countdown. */
+    fun refreshNews() {
+        newsJob?.cancel()
+        newsJob = viewModelScope.launch {
+            _newsState.value = NewsUiState.Loading
+            _newsState.value = newsRepository.getLatestNews().fold(
+                onSuccess = { articles -> NewsUiState.Success(articles) },
+                onFailure = { NewsUiState.Error }
             )
         }
     }
@@ -89,7 +110,10 @@ class UtilityViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = this[APPLICATION_KEY] as UtilityApplication
-                UtilityViewModel(application.container.raceRepository)
+                UtilityViewModel(
+                    repository = application.container.raceRepository,
+                    newsRepository = application.container.newsRepository
+                )
             }
         }
     }

@@ -60,5 +60,8 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp)
 
+    // Loads the news photos from the web
+    implementation(libs.coil.compose)
+
     testImplementation(libs.junit)
 }
