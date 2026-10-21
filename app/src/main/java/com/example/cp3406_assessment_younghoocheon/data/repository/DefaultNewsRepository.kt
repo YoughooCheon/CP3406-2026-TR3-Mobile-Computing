@@ -18,18 +18,24 @@ private const val MAX_ARTICLES = 6
 /** Meta tags sit at the top of the page, so reading the first 200 KB is plenty. */
 private const val PAGE_HEAD_BYTES = 200_000
 
-/** A slow article page must not hold the whole news list back. */
+/** Safety net: a slow article page must not hold the whole news list back. */
 private const val IMAGE_LOOKUP_TIMEOUT_MS = 5_000L
 
-/** [NewsRepository] backed by the official formula1.com RSS feed and article pages. */
+/**
+ * [NewsRepository] backed by the official formula1.com RSS feed and article pages.
+ *
+ * [articleApi] should use an HTTP client with a short call timeout, because a blocking read
+ * of a response body cannot be stopped by a coroutine timeout alone.
+ */
 class DefaultNewsRepository(
-    private val api: F1NewsApi
+    private val feedApi: F1NewsApi,
+    private val articleApi: F1NewsApi
 ) : NewsRepository {
 
     // IO dispatcher: the article pages are streamed, and streams must not be read on the main thread.
     override suspend fun getLatestNews(): Result<List<NewsArticle>> = withContext(Dispatchers.IO) {
         try {
-            val articles = api.getLatestNews()
+            val articles = feedApi.getLatestNews()
                 .use { body -> parseNewsFeed(body.byteStream()) }
                 .take(MAX_ARTICLES)
             Result.success(withImages(articles))
@@ -51,7 +57,7 @@ class DefaultNewsRepository(
 
     private suspend fun findImageUrl(link: String): String? = try {
         withTimeoutOrNull(IMAGE_LOOKUP_TIMEOUT_MS) {
-            api.getArticlePage(link).use { body -> parseOgImage(body.readHead()) }
+            articleApi.getArticlePage(link).use { body -> parseOgImage(body.readHead()) }
         }
     } catch (e: CancellationException) {
         throw e

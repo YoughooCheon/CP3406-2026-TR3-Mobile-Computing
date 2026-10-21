@@ -13,6 +13,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 private const val NETWORK_TIMEOUT_SECONDS = 15L
+
+/** An article page is only read for its photo address, so the whole call may take just a few seconds. */
+private const val ARTICLE_CALL_TIMEOUT_SECONDS = 5L
 private const val USER_AGENT = "CP3406-F1-RaceCountdown/1.0 (student project)"
 
 /** Manual dependency-injection container: the one place where objects are wired together. */
@@ -41,6 +44,14 @@ class DefaultAppContainer : AppContainer {
             .build()
     }
 
+    // Shares the connection pool and settings of okHttpClient; only the overall call limit is added.
+    // Unlike a coroutine timeout, callTimeout also stops a slow read of the response body.
+    private val articleHttpClient: OkHttpClient by lazy {
+        okHttpClient.newBuilder()
+            .callTimeout(ARTICLE_CALL_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .build()
+    }
+
     private val api: F1Api by lazy {
         Retrofit.Builder()
             .baseUrl(F1Api.BASE_URL)
@@ -50,17 +61,22 @@ class DefaultAppContainer : AppContainer {
             .create(F1Api::class.java)
     }
 
-    // Second Retrofit instance: the news RSS feed lives on formula1.com, not on the Jolpica server.
+    // The news RSS feed lives on formula1.com, not on the Jolpica server.
     // No converter factory is needed because the raw XML is parsed by parseNewsFeed().
-    private val newsApi: F1NewsApi by lazy {
+    private fun createNewsApi(client: OkHttpClient): F1NewsApi =
         Retrofit.Builder()
             .baseUrl(F1NewsApi.BASE_URL)
-            .client(okHttpClient)
+            .client(client)
             .build()
             .create(F1NewsApi::class.java)
-    }
+
+    private val feedApi: F1NewsApi by lazy { createNewsApi(okHttpClient) }
+
+    private val articleApi: F1NewsApi by lazy { createNewsApi(articleHttpClient) }
 
     override val raceRepository: RaceRepository by lazy { DefaultRaceRepository(api) }
 
-    override val newsRepository: NewsRepository by lazy { DefaultNewsRepository(newsApi) }
+    override val newsRepository: NewsRepository by lazy {
+        DefaultNewsRepository(feedApi = feedApi, articleApi = articleApi)
+    }
 }
