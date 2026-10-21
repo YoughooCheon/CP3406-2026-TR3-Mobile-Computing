@@ -7,7 +7,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.cp3406_assessment_younghoocheon.R
 
-/** The four bottom-navigation destinations of the app. */
+/** The two bottom-navigation destinations of the app. */
 enum class AppDestination(
     @StringRes val titleRes: Int,
     @StringRes val labelRes: Int,
