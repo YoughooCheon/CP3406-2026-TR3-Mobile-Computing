@@ -10,9 +10,12 @@ import com.example.cp3406_assessment_younghoocheon.data.repository.RaceError
 import com.example.cp3406_assessment_younghoocheon.data.repository.RaceLoadException
 import java.io.IOException
 import kotlinx.coroutines.runBlocking
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import retrofit2.HttpException
+import retrofit2.Response
 
 class DefaultRaceRepositoryTest {
 
@@ -71,6 +74,14 @@ class DefaultRaceRepositoryTest {
         val repository = DefaultRaceRepository(FakeApi { throw IOException("offline") })
 
         assertEquals(RaceError.NETWORK, errorOf(repository.getNextRace()))
+    }
+
+    @Test
+    fun httpException_isReportedAsServerError(): Unit = runBlocking {
+        val errorResponse = Response.error<NextRaceResponse>(500, "".toResponseBody())
+        val repository = DefaultRaceRepository(FakeApi { throw HttpException(errorResponse) })
+
+        assertEquals(RaceError.SERVER, errorOf(repository.getNextRace()))
     }
 
     @Test
