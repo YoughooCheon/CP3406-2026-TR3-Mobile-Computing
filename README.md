@@ -45,12 +45,12 @@ Other details:
 | **Layouts using Jetpack Compose** | Small, reusable composables: `RaceHeader`, `CountdownCard`, `NewsSection`, `SessionScheduleCard`, `SessionRow`, `LoadingContent`, `ErrorContent` and the sections of `SettingsScreen`. State is hoisted, so screens are stateless and previewable (`@Preview`). The `now` clock is passed as a `State<Instant>` and read only by the countdown and schedule composables, so only those recompose every second. The splash uses `Animatable` and a `Canvas`. |
 | **Material Design 3** | `MaterialTheme` with a custom colour scheme and typography, `Scaffold`, `TopAppBar`, `NavigationBar`, `Card`, `FilterChip`, `Switch`, `Button` / `TextButton`, `HorizontalDivider`. Colours come from the theme (`Color.kt`, `Theme.kt`). The only hard-coded colours are white and black used for text and scrims on top of photos and the countdown gradient. |
 | **App architecture** | **ViewModel**: `UtilityViewModel` exposes `StateFlow`s (`UtilityUiState`, `NewsUiState`, `UtilitySettings`, `now`) and is shared by both screens, so a settings change updates the Home screen immediately. **Repository pattern**: `RaceRepository` / `DefaultRaceRepository` and `NewsRepository` / `DefaultNewsRepository` hide all networking from the UI and return `Result`. **Dependency injection**: a manual `AppContainer` created in `UtilityApplication` and injected through a `ViewModelProvider.Factory`. |
-| **Web APIs using Retrofit** | Two Retrofit services sharing one OkHttp client (15 s timeouts and a polite `User-Agent` header). `F1Api` uses the Gson converter to read the Jolpica schedule. `F1NewsApi` returns raw `ResponseBody` for the formula1.com RSS feed and for article pages. See below. |
+| **Web APIs using Retrofit** | Retrofit on top of one shared OkHttp client (15 s timeouts and a polite `User-Agent` header). `F1Api` uses the Gson converter to read the Jolpica schedule. `F1NewsApi` returns raw `ResponseBody` for the formula1.com RSS feed and for article pages; the article pages use a derived client with a 5 s call timeout. See below. |
 
 ### Networking in detail
 
 - **Race schedule** – `GET https://api.jolpi.ca/ergast/f1/current/next.json`. The Gson DTOs (`RaceDtos.kt`) are nullable with defaults, so a missing key never crashes parsing. `RaceMapper` converts them to the `Race` domain model: sessions are sorted by start time, the race itself is mandatory and a missing session time falls back to midnight UTC. Failures are translated into `RaceError` (`NO_RACE`, `NETWORK`, `SERVER`, `DATA`), so the UI never sees Retrofit or OkHttp exceptions and shows a friendly message for each.
-- **News** – `GET https://www.formula1.com/en/latest/all.xml`. The RSS XML is parsed with `XmlPullParser` (`NewsFeedParser`). For the first six articles the repository looks up each article's `og:image` photo **in parallel** (`async` / `awaitAll` on `Dispatchers.IO`); only the first 200 KB of each page is read (streamed), and an article without a photo is still listed (the top story falls back to a red-to-black gradient). Photos are displayed with Coil (`AsyncImage`).
+- **News** – `GET https://www.formula1.com/en/latest/all.xml`. The RSS XML is parsed with `XmlPullParser` (`NewsFeedParser`). For the first six articles the repository looks up each article's `og:image` photo **in parallel** (`async` / `awaitAll` on `Dispatchers.IO`). Only the first 200 KB of each page is read (streamed), and an OkHttp call timeout of 5 s stops a slow page from holding the list back. An article without a photo is still listed (the top story falls back to a red-to-black gradient). Photos are displayed with Coil (`AsyncImage`).
 - Cancellation is never swallowed (`CancellationException` is rethrown), so coroutines stay structured and lifecycle-safe.
 
 ## Architecture
@@ -120,13 +120,14 @@ Run the unit tests with `./gradlew testDebugUnitTest` or right-click `app/src/te
 
 ## Tests
 
-25 plain JVM unit tests (no emulator needed):
+33 plain JVM unit tests (no emulator needed):
 
 | Test class | Covers |
 | --- | --- |
 | `RaceDtoParsingTest` | Real Jolpica JSON → DTO → domain model, including a sprint weekend |
+| `OgImageParserTest` | News photo address: `og:image` extraction, sub-properties ignored, HTML entities decoded, https only, resizing |
 | `RaceMapperTest` | Standard and sprint weekends, sorting, legacy `SprintShootout`, missing time / date, safe defaults |
-| `DefaultRaceRepositoryTest` | Error handling with a fake `F1Api`: success, empty list, missing body, `IOException`, unusable race |
+| `DefaultRaceRepositoryTest` | Error handling with a fake `F1Api`: success, empty list, missing body, `IOException`, HTTP server error, unusable race |
 | `SessionScheduleTest` | Countdown maths, next-session and race modes, hidden sessions, weekend over, race always visible |
 | `TimeFormattingTest` | 24-hour time, time zone conversion, day roll-over (UTC vs Pacific/Auckland) |
 
